@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EmprendeFácil IA | Orientación y diagnóstico</title>
+<style>
+:root{--navy:#0b2947;--navy2:#123b61;--teal:#078b78;--mint:#e6f7f1;--blue:#1673c5;--bg:#f4f7fb;--text:#162b45;--muted:#63758b;--line:#dce5ef;--white:#fff;--amber:#a96a08}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+.app{min-height:100vh;display:grid;grid-template-columns:240px 1fr}
+.sidebar{background:linear-gradient(180deg,var(--navy),#071e36);color:white;padding:24px 16px;display:flex;flex-direction:column;gap:26px}
+.brand{font-size:22px;font-weight:800;letter-spacing:-.5px}.brand span{color:#54d2b4}.tagline{font-size:12px;color:#b9d1e6;margin-top:6px}
+nav{display:grid;gap:8px}nav a{color:#d8e7f5;text-decoration:none;padding:12px;border-radius:10px;display:flex;gap:12px;align-items:center;font-size:14px}nav a.active,nav a:hover{background:#087e78;color:white}
+.sidebar-note{margin-top:auto;border:1px solid #315777;background:#123655;padding:14px;border-radius:14px;font-size:13px;line-height:1.5;color:#d6e7f5}
+main{padding:28px;max-width:1500px;width:100%;margin:auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:22px}.top h1{font-size:26px;margin:0 0 7px}.top p{margin:0;color:var(--muted)}.pill{background:#e2f4ee;color:#08765f;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:700}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:20px}
+.panel{background:white;border:1px solid var(--line);border-radius:18px;box-shadow:0 5px 18px #183a5a08}
+.chat-panel{display:flex;flex-direction:column;min-height:690px;overflow:hidden}
+.panel-head{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+.avatar{height:42px;width:42px;background:#dff4ef;border-radius:13px;display:grid;place-items:center;font-size:23px}
+.panel-head strong{display:block}.panel-head small{color:var(--muted)}
+.chat{padding:24px;display:flex;flex-direction:column;gap:18px;flex:1}
+.msg{max-width:82%;padding:15px 17px;border-radius:16px;line-height:1.55;font-size:14px}.bot{background:#edf3fb;border-top-left-radius:5px}.user{background:#ddf5e9;align-self:flex-end;border-top-right-radius:5px}
+.msg strong{display:block;margin-bottom:5px}
+.quick{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 4px 54px}
+button,.choice{border:1px solid #b7d7d3;background:white;color:#116f69;padding:10px 14px;border-radius:999px;cursor:pointer;font-weight:600;font-size:13px}
+button:hover,.choice:hover{background:#eaf8f4}.primary{background:var(--teal);color:white;border-color:var(--teal)}.primary:hover{background:#067663;color:white}
+.question{border:1px solid #d5e3f1;border-radius:16px;padding:18px;margin-left:54px}
+.question h3{margin:0 0 6px;font-size:17px}.question p{margin:0 0 14px;color:var(--muted);font-size:13px}
+.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.choice{border-radius:12px;text-align:left;padding:14px;min-height:55px;color:#244563}
+.choice.selected{background:#e2f5ef;border-color:var(--teal);color:#08735f;box-shadow:inset 0 0 0 1px var(--teal)}
+.q-actions{display:flex;justify-content:space-between;margin-top:16px}
+.composer{border-top:1px solid var(--line);padding:16px 20px;display:flex;gap:10px}.composer input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;padding:13px 16px;font-size:14px;outline:none}.composer input:focus{border-color:var(--teal)}.composer button{border-radius:50%;width:45px;height:45px;padding:0;font-size:18px}
+.right{display:flex;flex-direction:column;gap:15px}.sidecard{padding:18px}.sidecard h3{margin:0 0 13px;font-size:16px}.progressline{height:9px;background:#e6edf5;border-radius:99px;overflow:hidden;margin:10px 0}.progressline span{display:block;width:25%;height:100%;background:var(--teal);border-radius:99px}.small{font-size:13px;color:var(--muted);line-height:1.5}.tip{background:#e9f7f1;border-color:#d0eee3}.list{display:grid;gap:10px}.list div{font-size:13px;display:flex;gap:9px;align-items:flex-start}.check{color:#13966d;font-weight:800}
+.notice{background:#fff8e9;border:1px solid #f2dfb5;color:#80520b;padding:12px;border-radius:12px;font-size:12px;line-height:1.5}
+.footer{font-size:12px;color:#8291a3;text-align:center;margin-top:18px}
+.hidden{display:none!important}
+.result h3{margin-top:0}.result .stat{background:#f4f8fc;padding:12px;border-radius:10px;margin:8px 0;font-size:13px}
+@media(max-width:1050px){.app{grid-template-columns:78px 1fr}.sidebar{padding:20px 10px}.brand,.tagline,.sidebar-note,nav a span{display:none}nav a{justify-content:center;font-size:20px}.layout{grid-template-columns:1fr}.right{display:grid;grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){.app{display:block}.sidebar{display:none}main{padding:15px}.top{align-items:flex-start;flex-direction:column}.top h1{font-size:22px}.chat-panel{min-height:650px}.chat{padding:15px}.msg{max-width:95%}.question,.quick{margin-left:0}.choices{grid-template-columns:1fr}.right{display:flex}.layout{display:block}.right{margin-top:15px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div><div class="brand">Emprende<span>Fácil IA</span></div><div class="tagline">Tu aliado en Fondo Emprender</div></div>
+  <nav>
+    <a class="active" href="#asistente">💬 <span>Asistente IA</span></a>
+    <a href="#convocatorias">📣 <span>Convocatorias</span></a>
+    <a href="#diagnostico">🧭 <span>Diagnóstico inicial</span></a>
+    <a href="#informe">📄 <span>Mi informe</span></a>
+    <a href="#recursos">📚 <span>Recursos</span></a>
+  </nav>
+  <div class="sidebar-note"><strong>Orientación responsable</strong><br>Información oficial, diagnóstico inicial y recomendaciones. La prevalidación no equivale a aprobación ni garantiza financiación.</div>
+</aside>
+
+<main>
+  <header class="top">
+    <div><h1>Asistente inteligente de Fondo Emprender</h1><p>Pregunta, aprende y avanza con confianza.</p></div>
+    <span class="pill">● Demo interactiva</span>
+  </header>
+
+  <div class="layout">
+    <section class="panel chat-panel" id="asistente">
+      <div class="panel-head"><div class="avatar">🤖</div><div><strong>EmprendeFácil IA</strong><small>Orientación y diagnóstico inicial</small></div></div>
+      <div class="chat" id="chat">
+        <div class="msg bot"><strong>¡Hola! Soy tu asistente de Fondo Emprender.</strong>Puedo ayudarte a comprender las convocatorias, revisar preliminarmente requisitos y condiciones, y realizar un diagnóstico inicial de tu iniciativa.<br><br><strong>¿Por dónde quieres comenzar?</strong></div>
+        <div class="quick">
+          <button onclick="startFlow('convocatoria')">Consultar convocatorias</button>
+          <button onclick="startFlow('requisitos')">Verificar requisitos</button>
+          <button onclick="startFlow('diagnostico')">Hacer diagnóstico</button>
+        </div>
+        <div id="flow"></div>
+      </div>
+      <form class="composer" onsubmit="sendMessage(event)">
+        <input id="message" placeholder="Escribe tu pregunta..." aria-label="Escribe tu pregunta"/>
+        <button class="primary" type="submit" aria-label="Enviar">➤</button>
+      </form>
+    </section>
+
+    <aside class="right">
+      <section class="panel sidecard">
+        <h3>Tu progreso</h3><div class="progressline"><span id="progress"></span></div>
+        <strong id="progressText">0% · Paso 1: Diagnóstico inicial</strong>
+        <p class="small" id="progressHint">Completa las preguntas para generar tu resumen.</p>
+      </section>
+      <section class="panel sidecard tip">
+        <h3>💡 ¿Sabías que?</h3>
+        <p class="small">Las condiciones de participación pueden variar según la convocatoria. Consulta siempre sus términos de referencia oficiales y vigentes.</p>
+      </section>
+      <section class="panel sidecard" id="convocatorias">
+        <h3>Información clave</h3>
+        <div class="list">
+          <div><span class="check">✓</span> Requisitos y condiciones</div>
+          <div><span class="check">✓</span> Oportunidades de convocatoria</div>
+          <div><span class="check">✓</span> Diagnóstico de la iniciativa</div>
+          <div><span class="check">✓</span> Recomendaciones de preparación</div>
+        </div>
+        <p class="small" style="margin-top:13px">Demo: no está conectada a bases oficiales. Valida la información en los canales del SENA/Fondo Emprender.</p>
+      </section>
+      <section class="panel sidecard" id="recursos">
+        <h3>¿Necesitas ayuda?</h3>
+        <p class="small">Escribe una pregunta o selecciona una ruta. Puedes reiniciar el diagnóstico cuando quieras.</p>
+        <button onclick="resetFlow()">↻ Reiniciar diagnóstico</button>
+      </section>
+    </aside>
+  </div>
+  <div class="footer">Prototipo demostrativo · No recopila ni envía información a servidores.</div>
+</main>
+</div>
+
+<script>
+const flowEl=document.getElementById('flow'),chat=document.getElementById('chat');
+let flowType='',step=0,answers={};
+const diagnostic=[
+ {key:'business',title:'¿Qué tipo de negocio quieres desarrollar?',help:'Selecciona la opción que mejor describa tu iniciativa.',options:['Comercio','Servicios','Industria o producción','Agroindustria o agropecuario']},
+ {key:'stage',title:'¿En qué estado se encuentra tu iniciativa?',help:'Esto nos ayuda a comprender tu punto de partida.',options:['Solo tengo una idea','Estoy validando el mercado','Tengo un producto o servicio','Ya tengo una empresa en funcionamiento']},
+ {key:'customer',title:'¿A quién quieres ofrecer tu producto o servicio?',help:'Puedes elegir una opción aproximada.',options:['Personas consumidoras','Empresas o negocios','Instituciones','Aún no lo he definido']},
+ {key:'need',title:'¿En qué necesitas más apoyo?',help:'Selecciona la necesidad principal.',options:['Definir o mejorar la idea','Conocer requisitos de convocatoria','Mercado y clientes','Costos y modelo de negocio','Documentos y preparación']}
+];
+const requirement=[
+ {key:'profile',title:'¿Con qué perfil deseas revisar las condiciones?',help:'No compartas números de documento ni datos sensibles.',options:['Estudiante o aprendiz','Egresado/a','Persona con formación o experiencia pertinente','No estoy seguro/a']},
+ {key:'idea',title:'¿Tu iniciativa tiene una actividad económica definida?',help:'Elige la respuesta que corresponda.',options:['Sí, está definida','Tengo varias opciones','Aún no']}
+];
+function bubble(text,who='bot'){const d=document.createElement('div');d.className='msg '+who;d.innerHTML=text;chat.insertBefore(d,flowEl);chat.scrollTop=chat.scrollHeight}
+function startFlow(type){
+ flowType=type;step=0;answers={};flowEl.innerHTML='';
+ if(type==='convocatoria'){bubble('Para consultar convocatorias, revisa el portal oficial de Fondo Emprender/SENA. En esta demo no tengo conexión en tiempo real ni puedo confirmar convocatorias abiertas. Puedo ayudarte a identificar qué información debes revisar: población objetivo, fechas, financiación, actividades permitidas y documentos.');return}
+ bubble(type==='requisitos'?'Vamos a realizar una prevalidación orientativa. Las respuestas se contrastarían con los términos oficiales de la convocatoria seleccionada.':'Comencemos tu diagnóstico inicial. Te haré preguntas breves, una a la vez.');
+ renderQuestion();
+}
+function renderQuestion(){
+ const arr=flowType==='requisitos'?requirement:diagnostic;
+ if(step>=arr.length){showResult();return}
+ const q=arr[step];let html=`<div class="question"><h3>${step+1}/${arr.length} · ${q.title}</h3><p>${q.help}</p><div class="choices">`;
+ q.options.forEach(o=>html+=`<button class="choice ${answers[q.key]===o?'selected':''}" onclick="choose('${q.key}',${JSON.stringify(o).replace(/"/g,'&quot;')})">${o}</button>`);
+ html+=`</div><div class="q-actions"><button onclick="prev()">← Volver</button><button class="primary" onclick="next()" ${answers[q.key]?'':'disabled'}>Siguiente →</button></div></div>`;
+ flowEl.innerHTML=html;chat.scrollTop=chat.scrollHeight;
+}
+function choose(k,v){answers[k]=v;renderQuestion()}
+function next(){const arr=flowType==='requisitos'?requirement:diagnostic;if(!answers[arr[step].key])return;step++;renderQuestion();updateProgress()}
+function prev(){if(step>0)step--;renderQuestion()}
+function updateProgress(){let arr=flowType==='requisitos'?requirement:diagnostic;let p=Math.round(step/arr.length*100);document.getElementById('progress').style.width=p+'%';document.getElementById('progressText').textContent=p+'% · '+(flowType==='requisitos'?'Prevalidación':'Diagnóstico inicial');document.getElementById('progressHint').textContent=step+' de '+arr.length+' preguntas completadas.'}
+function showResult(){
+ flowEl.innerHTML=`<div class="question result"><h3>✓ ${flowType==='requisitos'?'Prevalidación orientativa':'Diagnóstico inicial'} completado</h3><p>Resumen basado únicamente en tus respuestas de esta demostración.</p>
+ ${Object.entries(answers).map(([k,v])=>`<div class="stat"><strong>${label(k)}:</strong> ${v}</div>`).join('')}
+ <div class="notice"><strong>Importante:</strong> Este resultado no verifica elegibilidad. Para validar requisitos se necesita seleccionar una convocatoria vigente y contrastar cada respuesta con sus fuentes oficiales. No garantiza aprobación ni financiación.</div>
+ <div class="q-actions"><button onclick="resetFlow()">Reiniciar</button><button class="primary" onclick="copySummary()">Copiar resumen</button></div></div>`;
+ document.getElementById('progress').style.width='100%';document.getElementById('progressText').textContent='100% · '+(flowType==='requisitos'?'Prevalidación':'Diagnóstico inicial');document.getElementById('progressHint').textContent='Resumen de demostración listo.';
+ bubble('¡Listo! Hemos organizado tus respuestas. Puedes copiarlas y compartirlas con tu asesor.','bot');
+}
+function label(k){return ({business:'Tipo de negocio',stage:'Estado de la iniciativa',customer:'Cliente objetivo',need:'Necesidad principal',profile:'Perfil declarado',idea:'Actividad definida'})[k]||k}
+function copySummary(){let s='Resumen de orientación\\n'+Object.entries(answers).map(([k,v])=>label(k)+': '+v).join('\\n')+'\\nNota: prevalidación orientativa, no confirma elegibilidad.';navigator.clipboard?.writeText(s).then(()=>alert('Resumen copiado.'));if(!navigator.clipboard)alert(s)}
+function resetFlow(){flowType='';step=0;answers={};flowEl.innerHTML='';document.getElementById('progress').style.width='0%';document.getElementById('progressText').textContent='0% · Paso 1: Diagnóstico inicial';document.getElementById('progressHint').textContent='Completa las preguntas para generar tu resumen.';bubble('Diagnóstico reiniciado. ¿Qué deseas hacer ahora?');}
+function sendMessage(e){e.preventDefault();let inp=document.getElementById('message'),v=inp.value.trim();if(!v)return;bubble(v,'user');inp.value='';bubble('Gracias por tu pregunta. Esta versión es un prototipo sin conexión a fuentes oficiales ni un modelo de IA. En la implementación real, consultaría documentos vigentes, respondería con citas y, si faltan datos, te haría una pregunta aclaratoria o te remitiría a un asesor. Puedes iniciar una ruta con los botones de arriba.');}
+</script>
+</body>
+</html>
